@@ -10,7 +10,6 @@ if os.path.exists(dotenv_path):
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
-app.root_path = os.path.abspath(os.path.dirname(__file__))
 
 
 @app.route('/')
