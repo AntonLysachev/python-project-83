@@ -3,8 +3,9 @@ from psycopg2 import sql
 from page_analyzer.constants import GET_COLUMN, GET_FIELD, GET_TABLE, INSERT
 
 
-def get_table(table_name):
-    query = sql.SQL(GET_TABLE).format(sql.Identifier(table_name))
+def get_table(table_name, order_by='ASC'):
+    query = sql.SQL(GET_TABLE).format(sql.Identifier(table_name),
+                                      sql.SQL(order_by))
     try:
         connection = get_connection()
         cursor = connection.cursor()
@@ -85,7 +86,7 @@ def save(args, url, created_at):
 
 def to_dict_table(table):
     users = []
-    data = get_table(table)
+    data = get_table(table, 'DESC')
     for url in data:
         users.append({'id': url[0],
                       'name': url[1],
