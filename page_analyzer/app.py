@@ -27,13 +27,17 @@ def add_url():
     today = date.today()
     url = request.form.get('url')
     errors = validate(url)
-    print(errors)
     if errors:
-        flash(errors)
-        return render_template('index.html')
+        flash(*errors)
+        return redirect(url_for('index'))
+    is_available = get_url('urls', 'name', url)
+    if is_available:
+        id = is_available['id']
+        flash('Страница уже существует', 'info')
+        return redirect(url_for('urls_view', id=id))
     save(INSERT_URL_TABLE, url, today)
     id = get_column('id', 'urls', 'name', url)
-    flash('Страница успешно добавлена')
+    flash('Страница успешно добавлена', 'success')
     return redirect(url_for('urls_view', id=id))
 
 

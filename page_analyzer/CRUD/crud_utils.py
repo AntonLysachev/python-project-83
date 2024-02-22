@@ -41,6 +41,7 @@ def get_column(column_name, table_name, where, value):
                                        sql.Identifier(table_name),
                                        sql.Identifier(where))
     try:
+        print(query)
         connection = get_connection()
         cursor = connection.cursor()
         cursor.execute(query, (value,))
