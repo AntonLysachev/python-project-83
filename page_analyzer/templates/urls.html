@@ -5,7 +5,7 @@
 {% block content %}
 <main class="flex-grow-1">
     <div class="container-lg mt-3">
-      <h1>Сайты</h1>
+      <h1>Сайты</h1> 
 <div class="table-responsive">
   <table class="table table-bordered table-hover text-nowrap" data-test="urls">
     <thead>
@@ -17,6 +17,18 @@
     </tr>
     </thead>
     <tbody>
+        {% if urls %}
+        {% for url in urls %}
+        <tr>
+          <td>{{ url.id }}</td>
+          <td>
+            <a href="/urls/{{ url.id }}">{{ url.name }}</a>
+          </td>
+          <td>{{ url.date_check }}</td>
+          <td>{{ url.response_code }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
     </tbody>
   </table>
 </div>

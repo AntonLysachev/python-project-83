@@ -1,10 +1,11 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, get_flashed_messages
 import os
 from dotenv import load_dotenv
-from page_analyzer.CRUD.crud_utils import save, get_column, get_url
+from page_analyzer.CRUD.crud_utils import save, get_column, get_url, to_dict_table
 from datetime import date
 from page_analyzer.validation.validator import validate
 from page_analyzer.constants import INSERT_URL_TABLE
+from urllib.request import urlopen 
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
 if os.path.exists(dotenv_path):
@@ -45,7 +46,8 @@ def urls_view(id):
 
 @app.route('/urls')
 def urls():
-    return render_template('urls.html')
+    urls = to_dict_table('urls')
+    return render_template('urls.html', urls=urls)
 
 
 if __name__ == '__main__':
