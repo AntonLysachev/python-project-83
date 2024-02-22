@@ -8,4 +8,3 @@ dist/
 coverage.xml
 .pytest_cache/
 *.ps1
-.database.sql

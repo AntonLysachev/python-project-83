@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS urls (id serial primary key, name varchar(255), created_at date)
