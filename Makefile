@@ -12,4 +12,5 @@ lint:
 	poetry run flake8 page_analyzer
 
 build:
-	chmod +x ./build.sh
+	chmod +x ./build.sh; \
+	./build.sh
