@@ -40,8 +40,9 @@
         <th>Дата создания</th>
       </tr>
     </thead>
-    {% if url_info %}
+    {% if list_info %}
     <tbody>
+      {% for url_info in list_info %}
       <tr>
         <td>{{ url_info.id }}</td>
         <td>{{ url_info.status_code }}</td>
@@ -50,6 +51,7 @@
         <td>{{ url_info.description }}</td>
         <td>{{ url_info.created_at }}</td>
       </tr>
+      {% endfor %}
     </tbody>
     {% endif %}
     </table>

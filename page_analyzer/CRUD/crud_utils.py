@@ -73,20 +73,23 @@ def get_url_check(table_name, where, value):
         connection = get_connection()
         cursor = connection.cursor()
         cursor.execute(query, (value,))
-        data = cursor.fetchone()
+        data = cursor.fetchall()
         cursor.close()
         connection.close()
     except (Exception) as error:
         print(error)
     if data:
-        return {'id': data[0],
-                'url_id': data[1],
-                'status_code': data[2],
-                ' h1': data[3],
-                'title': data[4],
-                'description': data[5],
-                'created_at': data[6],}
-
+        to_dict = []
+        print(data)
+        for field in data:
+            to_dict.append({'id': field[0],
+                            'url_id': field[1],
+                            'status_code': field[2],
+                            ' h1': field[3],
+                            'title': field[4],
+                            'description': field[5],
+                            'created_at': field[6],})
+    return to_dict
 
 
 def save_url(url, created_at):

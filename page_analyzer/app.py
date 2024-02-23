@@ -45,8 +45,9 @@ def add_url():
 def urls_view(id):
     messages = get_flashed_messages(with_categories=True)
     url = get_url('urls', 'id', id)
-    url_info = get_url_check('url_checks', 'url_id', id)
-    return render_template('urls_view.html', messages=messages, url=url, url_info=url_info)
+    list_info = get_url_check('url_checks', 'url_id', id)
+    print(list_info)
+    return render_template('urls_view.html', messages=messages, url=url, list_info=list_info)
 
 
 @app.route('/urls')
