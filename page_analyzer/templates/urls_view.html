@@ -25,7 +25,7 @@
         </table>
       </div>
     <h2 class="mt-5 mb-3">Проверки</h2>
-    <form method="post" action="/urls/1/checks">
+    <form method="post" action="{{ url_for('checks', id=url.id) }}">
     <input type="submit" class="btn btn-primary" value="Запустить проверку">
     </form>
   <div>
@@ -40,8 +40,18 @@
         <th>Дата создания</th>
       </tr>
     </thead>
-      <tbody>
+    {% if url_info %}
+    <tbody>
+      <tr>
+        <td>{{ url_info.id }}</td>
+        <td>{{ url_info.status_code }}</td>
+        <td>{{ url_info.h1 }}</td>
+        <td>{{ url_info.title }}</td>
+        <td>{{ url_info.description }}</td>
+        <td>{{ url_info.created_at }}</td>
+      </tr>
     </tbody>
+    {% endif %}
     </table>
   </div>
     </div>

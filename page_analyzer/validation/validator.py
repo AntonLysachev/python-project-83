@@ -1,5 +1,4 @@
 from urllib.parse import urlparse
-from page_analyzer.CRUD.crud_utils import get_field
 
 
 def validate(url: str) -> bool:

@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, get_flashed_messages
 import os
 from dotenv import load_dotenv
-from page_analyzer.CRUD.crud_utils import save, get_column, get_url, to_dict_table
+from page_analyzer.CRUD.crud_utils import save_url, get_column, get_url, to_dict_table, save_check, get_url_check
 from datetime import date
 from page_analyzer.validation.validator import validate
 from page_analyzer.constants import INSERT_URL_TABLE
@@ -35,7 +35,7 @@ def add_url():
         id = is_available['id']
         flash('Страница уже существует', 'info')
         return redirect(url_for('urls_view', id=id))
-    save(INSERT_URL_TABLE, url, today)
+    save_url(url, today)
     id = get_column('id', 'urls', 'name', url)
     flash('Страница успешно добавлена', 'success')
     return redirect(url_for('urls_view', id=id))
@@ -45,13 +45,24 @@ def add_url():
 def urls_view(id):
     messages = get_flashed_messages(with_categories=True)
     url = get_url('urls', 'id', id)
-    return render_template('urls_view.html', messages=messages, url=url)
+    url_info = get_url_check('url_checks', 'url_id', id)
+    return render_template('urls_view.html', messages=messages, url=url, url_info=url_info)
 
 
 @app.route('/urls')
 def urls():
     urls = to_dict_table('urls')
     return render_template('urls.html', urls=urls)
+
+
+@app.route('/urls/<id>/checks', methods=["POST"])
+def checks(id):
+    today = date.today()
+    url = get_column('name', 'urls', 'id', id)
+    status_code = urlopen(url).getcode()
+    print(status_code)
+    save_check(id, status_code, today)
+    return redirect(url_for('urls_view', id=id))
 
 
 if __name__ == '__main__':
