@@ -80,7 +80,6 @@ def get_url_check(table_name, where, value):
         print(error)
     if data:
         to_dict = []
-        print(data)
         for field in data:
             to_dict.append({'id': field[0],
                             'url_id': field[1],

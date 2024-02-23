@@ -46,7 +46,6 @@ def urls_view(id):
     messages = get_flashed_messages(with_categories=True)
     url = get_url('urls', 'id', id)
     list_info = get_url_check('url_checks', 'url_id', id)
-    print(list_info)
     return render_template('urls_view.html', messages=messages, url=url, list_info=list_info)
 
 
