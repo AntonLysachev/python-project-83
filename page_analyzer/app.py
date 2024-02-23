@@ -1,11 +1,11 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, get_flashed_messages
 import os
 from dotenv import load_dotenv
-from page_analyzer.CRUD.crud_utils import save_url, get_column, get_url, to_dict_table, save_check, get_url_check
+from page_analyzer.CRUD.crud_utils import save_url, get_column, get_url, get_info_url, save_check, get_url_check
 from datetime import date
 from page_analyzer.validation.validator import validate
-from page_analyzer.constants import INSERT_URL_TABLE
-from urllib.request import urlopen 
+from page_analyzer.checker import check
+
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
 if os.path.exists(dotenv_path):
@@ -51,7 +51,7 @@ def urls_view(id):
 
 @app.route('/urls')
 def urls():
-    urls = to_dict_table('urls')
+    urls = get_info_url()
     return render_template('urls.html', urls=urls)
 
 
@@ -59,9 +59,11 @@ def urls():
 def checks(id):
     today = date.today()
     url = get_column('name', 'urls', 'id', id)
-    status_code = urlopen(url).getcode()
-    print(status_code)
-    save_check(id, status_code, today)
+    status_code = check(url)
+    if status_code:
+        save_check(id, status_code, today)
+        return redirect(url_for('urls_view', id=id))
+    flash('Произошла ошибка при проверке', 'danger')
     return redirect(url_for('urls_view', id=id))
 
 

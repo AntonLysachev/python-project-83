@@ -7,5 +7,4 @@ def get_connection():
         connection = psycopg2.connect(database_url)
     except (Exception) as error:
         print(error)
-        print(connection.encoding)
     return connection

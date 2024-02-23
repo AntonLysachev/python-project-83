@@ -1,6 +1,6 @@
 from page_analyzer.CRUD.db_util import get_connection
 from psycopg2 import sql
-from page_analyzer.constants import GET_COLUMN, GET_FIELD, GET_TABLE, INSERT_URL_TABLE, INSERT_URL_CHECKS_TABLE, GET_CHECK 
+from page_analyzer.constants import GET_COLUMN, GET_FIELD, GET_TABLE, INSERT_URL_TABLE, INSERT_URL_CHECKS_TABLE, GET_CHECK, GET_INFO_URL
 
 
 def get_table(table_name, order_by='ASC'):
@@ -79,16 +79,37 @@ def get_url_check(table_name, where, value):
     except (Exception) as error:
         print(error)
     if data:
-        to_dict = []
+        print(data)
+        list_urls = []
         for field in data:
-            to_dict.append({'id': field[0],
-                            'url_id': field[1],
-                            'status_code': field[2],
-                            ' h1': field[3],
-                            'title': field[4],
-                            'description': field[5],
-                            'created_at': field[6],})
-    return to_dict
+            list_urls.append({'id': tu_string(field[0]),
+                            'url_id': tu_string(field[1]),
+                            'status_code': tu_string(field[2]),
+                            ' h1': tu_string(field[3]),
+                            'title': tu_string(field[4]),
+                            'description': tu_string(field[5]),
+                            'created_at': tu_string(field[6]),})
+        return list_urls
+
+
+def get_info_url():
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        cursor.execute(GET_INFO_URL)
+        data = cursor.fetchall()
+        cursor.close()
+        connection.close()
+    except (Exception) as error:
+        print(error)
+    if data:
+        list_urls = []
+        for field in data:
+            list_urls.append({'id': tu_string(field[0]),
+                            'name': tu_string(field[1]),
+                            'status_code': tu_string(field[2]),
+                            'created_at': tu_string(field[3]),})
+        return list_urls
 
 
 def save_url(url, created_at):
@@ -133,5 +154,10 @@ def to_dict_table(table):
         users.append({'id': url[0],
                       'name': url[1],
                       'created_at': url[2],})
-
     return users
+
+
+def tu_string(value):
+    if value:
+        return value
+    return ''
