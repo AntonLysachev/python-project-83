@@ -9,6 +9,5 @@ def validate(url: str) -> bool:
     if not pars_url.netloc:
         errors = 'Некорректный URL', 'danger'
     elif '.' not in pars_url.netloc:
-            errors = 'Некорректный URL', 'danger'
+        errors = 'Некорректный URL', 'danger'
     return errors
-    

@@ -1,6 +1,7 @@
 import psycopg2
 import os
 
+
 def get_connection() -> psycopg2.connect:
     try:
         database_url = os.getenv('DATABASE_URL')

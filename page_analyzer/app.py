@@ -1,7 +1,17 @@
-from flask import Flask, render_template, request, flash, redirect, url_for, get_flashed_messages
+from flask import (Flask,
+                   render_template,
+                   request, flash,
+                   redirect,
+                   url_for,
+                   get_flashed_messages)
 import os
 from dotenv import load_dotenv
-from page_analyzer.CRUD.crud_utils import save_url, get_column, get_url, get_info_url, save_check, get_url_check
+from page_analyzer.CRUD.crud_utils import (save_url,
+                                           get_column,
+                                           get_url,
+                                           get_info_url,
+                                           save_check,
+                                           get_url_check)
 from datetime import date
 from page_analyzer.utilities.validator import validate
 from page_analyzer.utilities.checker import check
@@ -46,7 +56,10 @@ def urls_view(id):
     messages = get_flashed_messages(with_categories=True)
     url = get_url('urls', 'id', id)
     list_info = get_url_check('url_checks', 'url_id', id)
-    return render_template('urls_view.html', messages=messages, url=url, list_info=list_info)
+    return render_template('urls_view.html',
+                           messages=messages,
+                           url=url,
+                           list_info=list_info)
 
 
 @app.route('/urls')
