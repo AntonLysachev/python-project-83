@@ -3,8 +3,8 @@ import os
 from dotenv import load_dotenv
 from page_analyzer.CRUD.crud_utils import save_url, get_column, get_url, get_info_url, save_check, get_url_check
 from datetime import date
-from page_analyzer.validation.validator import validate
-from page_analyzer.checker import check
+from page_analyzer.utilities.validator import validate
+from page_analyzer.utilities.checker import check
 
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
@@ -59,9 +59,9 @@ def urls():
 def checks(id):
     today = date.today()
     url = get_column('name', 'urls', 'id', id)
-    status_code = check(url)
+    status_code, h1, title, description = check(url)
     if status_code:
-        save_check(id, status_code, today)
+        save_check(id, status_code, h1, title, description, today)
         return redirect(url_for('urls_view', id=id))
     flash('Произошла ошибка при проверке', 'danger')
     return redirect(url_for('urls_view', id=id))
