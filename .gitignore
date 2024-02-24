@@ -8,4 +8,5 @@ dist/
 coverage.xml
 .pytest_cache/
 *.ps1
+.env
 test.py
