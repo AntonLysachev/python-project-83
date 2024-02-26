@@ -29,7 +29,7 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 @app.route('/')
 def index() -> render_template:
     messages = get_flashed_messages(with_categories=True)
-    return render_template('index.html', messages=messages)
+    return render_template('index.html', messages=messages), 200
 
 
 @app.route('/urls', methods=["POST"])
@@ -65,7 +65,7 @@ def urls_view(id):
 @app.route('/urls')
 def urls():
     urls = get_info_url()
-    return render_template('urls.html', urls=urls)
+    return render_template('urls.html', urls=urls), 200
 
 
 @app.route('/urls/<id>/checks', methods=["POST"])
