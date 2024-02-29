@@ -36,7 +36,8 @@ def add_url():
     errors = validate(url)
     if errors:
         flash(*errors)
-        return redirect(url_for('index'))
+        messages = get_flashed_messages(with_categories=True)
+        return render_template('index.html', messages=messages), 422
     is_available = get_url('urls', 'name', url)
     if is_available:
         id = is_available['id']
