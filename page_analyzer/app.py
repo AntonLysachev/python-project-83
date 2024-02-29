@@ -18,8 +18,7 @@ from page_analyzer.utilities.checker import check
 
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
-if os.path.exists(dotenv_path):
-    load_dotenv(dotenv_path)
+load_dotenv(dotenv_path)
 
 
 app = Flask(__name__)
