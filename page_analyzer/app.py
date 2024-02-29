@@ -13,6 +13,7 @@ from page_analyzer.CRUD.crud_utils import (save_url,
                                            save_check,
                                            get_url_check)
 from datetime import date
+from urllib.parse import urlparse
 from page_analyzer.utilities.validator import validate
 from page_analyzer.utilities.checker import check
 
@@ -33,18 +34,20 @@ def index() -> render_template:
 def add_url():
     today = date.today()
     url = request.form.get('url')
-    errors = validate(url)
+    url = urlparse(url)
+    normalize_url = f'{url.scheme}://{url.netloc}'
+    errors = validate(normalize_url)
     if errors:
         flash(*errors)
         messages = get_flashed_messages(with_categories=True)
         return render_template('index.html', messages=messages), 422
-    is_available = get_url('urls', 'name', url)
+    is_available = get_url('urls', 'name', normalize_url)
     if is_available:
         id = is_available['id']
         flash('Страница уже существует', 'info')
         return redirect(url_for('urls_view', id=id))
-    save_url(url, today)
-    id = get_column('id', 'urls', 'name', url)
+    save_url(normalize_url, today)
+    id = get_column('id', 'urls', 'name', normalize_url)
     flash('Страница успешно добавлена', 'success')
     return redirect(url_for('urls_view', id=id))
 
