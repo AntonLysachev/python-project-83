@@ -73,7 +73,14 @@ def checks(id):
     status_code, h1, title, description = check(url)
     if status_code:
         save_check(id, status_code, h1, title, description, today)
-        return redirect(url_for('urls_view', id=id))
+        flash('Страница успешно проверена', 'success')
+        messages = get_flashed_messages(with_categories=True)
+        url = get_url('urls', 'id', id)
+        list_info = get_url_check('url_checks', 'url_id', id)
+        return render_template('urls_view.html',
+                           messages=messages,
+                           url=url,
+                           list_info=list_info)
     flash('Произошла ошибка при проверке', 'danger')
     return redirect(url_for('urls_view', id=id))
 
