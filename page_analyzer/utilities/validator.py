@@ -1,13 +1,10 @@
 from urllib.parse import urlparse
+from validators import url
 
 
-def validate(url: str) -> bool:
-    pars_url = urlparse(url)
+def validate(_url: str) -> bool:
+    is_url = url(_url)
     errors = ''
-    if not pars_url.scheme:
-        errors = 'Некорректный URL', 'danger'
-    if not pars_url.netloc:
-        errors = 'Некорректный URL', 'danger'
-    elif '.' not in pars_url.netloc:
+    if not is_url:
         errors = 'Некорректный URL', 'danger'
     return errors
