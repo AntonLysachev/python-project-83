@@ -34,15 +34,15 @@ def get_field(table_name: str,
         sql.Identifier(table_name),
         sql.Identifier(where),
         sql.SQL(order_by))
-    # try:
-    connection = get_connection()
-    cursor = connection.cursor()
-    cursor.execute(query, (value,))
-    data = cursor.fetchone()
-    cursor.close()
-    connection.close()
-    # except (Exception) as error:
-        # print(error)
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        cursor.execute(query, (value,))
+        data = cursor.fetchone()
+        cursor.close()
+        connection.close()
+    except (Exception) as error:
+        print(error)
     return data
 
 

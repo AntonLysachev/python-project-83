@@ -17,10 +17,7 @@ from page_analyzer.utilities.validator import validate
 from page_analyzer.utilities.checker import check
 
 
-# dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
-# if os.path.exists(dotenv_path):
 load_dotenv()
-
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
