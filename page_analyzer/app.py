@@ -25,8 +25,7 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 @app.route('/')
 def index() -> render_template:
-    messages = get_flashed_messages(with_categories=True)
-    return render_template('index.html', messages=messages), 200
+    return render_template('index.html'), 200
 
 
 @app.route('/urls', methods=["POST"])
@@ -37,8 +36,7 @@ def add_url():
     errors = validate(normalize_url)
     if errors:
         flash(*errors)
-        messages = get_flashed_messages(with_categories=True)
-        return render_template('index.html', messages=messages), 422
+        return render_template('index.html'), 422
     is_available = get_url('urls', 'name', normalize_url)
     if is_available:
         id = is_available['id']
@@ -52,11 +50,9 @@ def add_url():
 
 @app.route('/urls/<id>')
 def urls_view(id):
-    messages = get_flashed_messages(with_categories=True)
     url = get_url('urls', 'id', id)
     list_info = get_url_pars('url_checks', 'url_id', id)
     return render_template('urls_view.html',
-                           messages=messages,
                            url=url,
                            list_info=list_info)
 
