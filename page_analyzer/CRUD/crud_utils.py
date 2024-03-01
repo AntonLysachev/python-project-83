@@ -50,7 +50,7 @@ def get_column(column_name: str, table_name: str, where, value: str) -> tuple:
     return data
 
 
-def get_url_check(table_name: str, where: str, value: str) -> list:
+def get_url_pars(table_name: str, where: str, value: str) -> list:
     query = sql.SQL(GET_CHECK).format(
         sql.Identifier(table_name),
         sql.Identifier(where))
@@ -108,7 +108,7 @@ def save_url(url: str):
         print(error)
 
 
-def save_check(url_id: str,
+def save_pars(url_id: str,
                status_code: str,
                h1: str,
                title: str,

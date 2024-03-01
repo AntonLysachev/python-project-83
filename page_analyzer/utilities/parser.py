@@ -2,7 +2,7 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
 
-def check(url: str) -> tuple:
+def pars_url(url: str) -> tuple:
     try:
         html = urlopen(url)
         status_code = html.getcode()

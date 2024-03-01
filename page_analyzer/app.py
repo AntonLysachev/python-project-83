@@ -10,11 +10,11 @@ from page_analyzer.CRUD.crud_utils import (save_url,
                                            get_column,
                                            get_url,
                                            get_info_url,
-                                           save_check,
-                                           get_url_check)
+                                           save_pars,
+                                           get_url_pars)
 from urllib.parse import urlparse
 from page_analyzer.utilities.validator import validate
-from page_analyzer.utilities.checker import check
+from page_analyzer.utilities.parser import pars_url
 
 
 load_dotenv()
@@ -54,7 +54,7 @@ def add_url():
 def urls_view(id):
     messages = get_flashed_messages(with_categories=True)
     url = get_url('urls', 'id', id)
-    list_info = get_url_check('url_checks', 'url_id', id)
+    list_info = get_url_pars('url_checks', 'url_id', id)
     return render_template('urls_view.html',
                            messages=messages,
                            url=url,
@@ -70,9 +70,9 @@ def urls():
 @app.route('/urls/<id>/checks', methods=["POST"])
 def checks(id):
     url = get_column('name', 'urls', 'id', id)
-    status_code, h1, title, description = check(url)
+    status_code, h1, title, description = pars_url(url)
     if status_code:
-        save_check(id, status_code, h1, title, description)
+        save_pars(id, status_code, h1, title, description)
         flash('Страница успешно проверена', 'success')
         return redirect(url_for('urls_view', id=id))
     flash('Произошла ошибка при проверке', 'danger')
