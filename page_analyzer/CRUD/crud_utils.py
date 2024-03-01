@@ -1,5 +1,4 @@
 from page_analyzer.CRUD.db_util import get_connection
-from datetime import date
 from psycopg2 import sql
 from page_analyzer.constants import (GET_COLUMN,
                                      GET_FIELD,
@@ -119,11 +118,11 @@ def get_info_url() -> list:
         return list_urls
 
 
-def save_url(url: str, created_at: str):
+def save_url(url: str):
     try:
         connection = get_connection()
         cursor = connection.cursor()
-        cursor.execute(INSERT_URL_TABLE, (url, created_at,))
+        cursor.execute(INSERT_URL_TABLE, (url,))
         connection.commit()
         cursor.close()
         connection.close()
@@ -135,8 +134,7 @@ def save_check(url_id: str,
                status_code: str,
                h1: str,
                title: str,
-               description: str,
-               date: date):
+               description: str):
     try:
         connection = get_connection()
         cursor = connection.cursor()
@@ -144,8 +142,7 @@ def save_check(url_id: str,
                                                  status_code,
                                                  h1,
                                                  title,
-                                                 description,
-                                                 date,))
+                                                 description,))
         connection.commit()
         cursor.close()
         connection.close()

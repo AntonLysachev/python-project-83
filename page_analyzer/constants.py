@@ -2,17 +2,16 @@ GET_TABLE = 'SELECT * FROM {} ORDER BY "id" {}'
 GET_FIELD = 'SELECT * FROM {} WHERE {} = %s ORDER BY "id" {}'
 GET_CHECK = 'SELECT * FROM {} WHERE {} = %s ORDER BY "id" DESC'
 GET_COLUMN = 'SELECT {} FROM {} WHERE {} =%s'
-INSERT_URL_TABLE = 'INSERT INTO urls (name, created_at) VALUES (%s, %s)'
+INSERT_URL_TABLE = 'INSERT INTO urls (name) VALUES (%s)'
 INSERT_URL_CHECKS_TABLE = """
 INSERT INTO url_checks (
     url_id,
     status_code,
     h1,
     title,
-    description,
-    created_at
+    description
 )
-VALUES (%s, %s, %s, %s, %s, %s)
+VALUES (%s, %s, %s, %s, %s)
 """
 
 GET_INFO_URL = """

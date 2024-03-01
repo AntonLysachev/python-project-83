@@ -12,7 +12,6 @@ from page_analyzer.CRUD.crud_utils import (save_url,
                                            get_info_url,
                                            save_check,
                                            get_url_check)
-from datetime import date
 from urllib.parse import urlparse
 from page_analyzer.utilities.validator import validate
 from page_analyzer.utilities.checker import check
@@ -32,7 +31,6 @@ def index() -> render_template:
 
 @app.route('/urls', methods=["POST"])
 def add_url():
-    today = date.today()
     url = request.form.get('url')
     url = urlparse(url)
     normalize_url = f'{url.scheme}://{url.netloc}'
@@ -46,7 +44,7 @@ def add_url():
         id = is_available['id']
         flash('Страница уже существует', 'info')
         return redirect(url_for('urls_view', id=id))
-    save_url(normalize_url, today)
+    save_url(normalize_url)
     id = get_column('id', 'urls', 'name', normalize_url)
     flash('Страница успешно добавлена', 'success')
     return redirect(url_for('urls_view', id=id))
@@ -71,11 +69,10 @@ def urls():
 
 @app.route('/urls/<id>/checks', methods=["POST"])
 def checks(id):
-    today = date.today()
     url = get_column('name', 'urls', 'id', id)
     status_code, h1, title, description = check(url)
     if status_code:
-        save_check(id, status_code, h1, title, description, today)
+        save_check(id, status_code, h1, title, description)
         flash('Страница успешно проверена', 'success')
         return redirect(url_for('urls_view', id=id))
     flash('Произошла ошибка при проверке', 'danger')
