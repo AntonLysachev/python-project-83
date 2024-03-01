@@ -109,10 +109,10 @@ def save_url(url: str):
 
 
 def save_pars(url_id: str,
-               status_code: str,
-               h1: str,
-               title: str,
-               description: str):
+              status_code: str,
+              h1: str,
+              title: str,
+              description: str):
     try:
         connection = get_connection()
         cursor = connection.cursor()

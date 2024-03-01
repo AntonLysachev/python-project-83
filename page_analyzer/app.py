@@ -2,8 +2,7 @@ from flask import (Flask,
                    render_template,
                    request, flash,
                    redirect,
-                   url_for,
-                   get_flashed_messages)
+                   url_for)
 import os
 from dotenv import load_dotenv
 from page_analyzer.CRUD.crud_utils import (save_url,
@@ -75,5 +74,7 @@ def checks(id):
     return redirect(url_for('urls_view', id=id))
 
 
+debug_switch = os.getenv('DEBUG_SWITCH')
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=debug_switch)
