@@ -2,33 +2,16 @@ from page_analyzer.CRUD.db_util import get_connection
 from psycopg2 import sql
 from page_analyzer.constants import (GET_COLUMN,
                                      GET_FIELD,
-                                     GET_TABLE,
                                      INSERT_URL_TABLE,
                                      INSERT_URL_CHECKS_TABLE,
                                      GET_CHECK,
                                      GET_INFO_URL)
 
 
-def get_table(table_name: str, order_by: str = 'ASC') -> tuple:
-    query = sql.SQL(GET_TABLE).format(sql.Identifier(table_name),
-                                      sql.SQL(order_by))
-    try:
-        connection = get_connection()
-        cursor = connection.cursor()
-        cursor.execute(query)
-        data = cursor.fetchall()
-        cursor.close()
-        connection.close()
-    except (Exception) as error:
-        print(error)
-
-    return data
-
-
-def get_field(table_name: str,
-              where: str,
-              value: str,
-              order_by: str = 'ASC') -> tuple:
+def get_url(table_name: str,
+            where: str,
+            value: str,
+            order_by: str = 'ASC') -> tuple:
     query = sql.SQL(GET_FIELD).format(
         sql.Identifier(table_name),
         sql.Identifier(where),
@@ -42,7 +25,10 @@ def get_field(table_name: str,
         connection.close()
     except (Exception) as error:
         print(error)
-    return data
+    if data:
+        return {'id': data[0],
+                'name': data[1],
+                'created_at': data[2]}
 
 
 def get_column(column_name: str, table_name: str, where, value: str) -> tuple:
@@ -62,14 +48,6 @@ def get_column(column_name: str, table_name: str, where, value: str) -> tuple:
         return data[0][0]
 
     return data
-
-
-def get_url(table_name: str, where: str, value: str) -> dict:
-    data = get_field(table_name, where, value)
-    if data:
-        return {'id': data[0],
-                'name': data[1],
-                'created_at': data[2]}
 
 
 def get_url_check(table_name: str, where: str, value: str) -> list:
@@ -148,16 +126,6 @@ def save_check(url_id: str,
         connection.close()
     except (Exception) as error:
         print(error)
-
-
-def to_dict_table(table: str) -> list:
-    users = []
-    data = get_table(table, 'DESC')
-    for url in data:
-        users.append({'id': url[0],
-                      'name': url[1],
-                      'created_at': url[2]})
-    return users
 
 
 def tu_string(value: str) -> str:

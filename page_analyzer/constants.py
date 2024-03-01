@@ -1,4 +1,3 @@
-GET_TABLE = 'SELECT * FROM {} ORDER BY "id" {}'
 GET_FIELD = 'SELECT * FROM {} WHERE {} = %s ORDER BY "id" {}'
 GET_CHECK = 'SELECT * FROM {} WHERE {} = %s ORDER BY "id" DESC'
 GET_COLUMN = 'SELECT {} FROM {} WHERE {} =%s'
