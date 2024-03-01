@@ -31,12 +31,12 @@ def index() -> render_template:
 @app.route('/urls', methods=["POST"])
 def add_url():
     url = request.form.get('url')
-    url = urlparse(url)
-    normalize_url = f'{url.scheme}://{url.netloc}'
-    errors = validate(normalize_url)
+    errors = validate(url)
     if errors:
         flash(*errors)
         return render_template('index.html'), 422
+    url = urlparse(url)
+    normalize_url = f'{url.scheme}://{url.netloc}'
     is_available = get_url('urls', 'name', normalize_url)
     if is_available:
         id = is_available['id']
