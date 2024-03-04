@@ -1,11 +1,5 @@
 from page_analyzer.CRUD.db_util import get_connection
 from psycopg2 import sql
-from page_analyzer.constants import (GET_COLUMN,
-                                     GET_FIELD,
-                                     INSERT_URL_TABLE,
-                                     INSERT_URL_CHECKS_TABLE,
-                                     GET_CHECK,
-                                     GET_INFO_URL)
 
 
 def get_url(table_name: str,
