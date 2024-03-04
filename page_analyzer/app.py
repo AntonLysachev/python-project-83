@@ -13,13 +13,14 @@ from page_analyzer.CRUD.crud_utils import (save_url,
                                            get_url_pars)
 from urllib.parse import urlparse
 from page_analyzer.utilities.validator import validate
-from page_analyzer.utilities.parser import pars_url
+from page_analyzer.utilities.parser import html_content, get_content
 
 
 load_dotenv()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+DEBUG_SWITCH = os.getenv('DEBUG_SWITCH')
 
 
 @app.route('/')
@@ -32,13 +33,14 @@ def add_url():
     url = request.form.get('url')
     errors = validate(url)
     if errors:
-        flash(*errors)
+        for error in errors:
+            flash(*error)
         return render_template('index.html'), 422
     url = urlparse(url)
     normalize_url = f'{url.scheme}://{url.netloc}'
-    is_available = get_url('urls', 'name', normalize_url)
-    if is_available:
-        id = is_available['id']
+    is_exists = get_url('urls', 'name', normalize_url)
+    if is_exists:
+        id = is_exists['id']
         flash('Страница уже существует', 'info')
         return redirect(url_for('urls_view', id=id))
     save_url(normalize_url)
@@ -65,7 +67,7 @@ def urls():
 @app.route('/urls/<id>/checks', methods=["POST"])
 def checks(id):
     url = get_column('name', 'urls', 'id', id)
-    status_code, h1, title, description = pars_url(url)
+    status_code, h1, title, description = html_content(get_content(url))
     if status_code:
         save_pars(id, status_code, h1, title, description)
         flash('Страница успешно проверена', 'success')
@@ -74,7 +76,5 @@ def checks(id):
     return redirect(url_for('urls_view', id=id))
 
 
-debug_switch = os.getenv('DEBUG_SWITCH')
-
 if __name__ == '__main__':
-    app.run(debug=debug_switch)
+    app.run(debug=DEBUG_SWITCH)

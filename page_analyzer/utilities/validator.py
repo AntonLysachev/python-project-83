@@ -1,9 +1,9 @@
 from validators import url
 
 
-def validate(addres: str) -> bool:
+def validate(addres: str) -> list:
     is_url = url(addres)
-    errors = ''
+    errors = []
     if not is_url:
-        errors = 'Некорректный URL', 'danger'
+        errors.append(('Некорректный URL', 'danger'))
     return errors

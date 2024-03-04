@@ -27,9 +27,9 @@ def get_url(table_name: str,
 
 def get_column(column_name: str, table_name: str, where, value: str) -> tuple:
     query = sql.SQL('SELECT {} FROM {} WHERE {} =%s').format(
-                                       sql.Identifier(column_name),
-                                       sql.Identifier(table_name),
-                                       sql.Identifier(where))
+        sql.Identifier(column_name),
+        sql.Identifier(table_name),
+        sql.Identifier(where))
     try:
         connection = get_connection()
         cursor = connection.cursor()
@@ -150,12 +150,11 @@ def save_pars(url_id: str,
             description
         )
         VALUES (%s, %s, %s, %s, %s)
-        """, 
-        (url_id,
-         status_code,
-         h1,
-         title,
-         description,))
+        """, (url_id,
+              status_code,
+              h1,
+              title,
+              description,))
         connection.commit()
         cursor.close()
         connection.close()
