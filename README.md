@@ -4,3 +4,10 @@
 Description: Page analyzer
              Check websites for SEO suitability for free
              https://hexlet-code-qxkq.onrender.com
+
+Commands: 
+        Install - make install
+        start guincorn - make start
+        start flask server - make dev
+        linter - make lint
+        run build.sh - make build
