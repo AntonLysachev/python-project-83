@@ -12,7 +12,7 @@ def get_url(table_name: str,
             where: str,
             value: str,
             order_by: str = 'ASC') -> tuple:
-    query = sql.SQL(GET_FIELD).format(
+    query = sql.SQL('SELECT * FROM {} WHERE {} = %s ORDER BY "id" {}').format(
         sql.Identifier(table_name),
         sql.Identifier(where),
         sql.SQL(order_by))
@@ -32,7 +32,8 @@ def get_url(table_name: str,
 
 
 def get_column(column_name: str, table_name: str, where, value: str) -> tuple:
-    query = sql.SQL(GET_COLUMN).format(sql.Identifier(column_name),
+    query = sql.SQL('SELECT {} FROM {} WHERE {} =%s').format(
+                                       sql.Identifier(column_name),
                                        sql.Identifier(table_name),
                                        sql.Identifier(where))
     try:
@@ -51,7 +52,7 @@ def get_column(column_name: str, table_name: str, where, value: str) -> tuple:
 
 
 def get_url_pars(table_name: str, where: str, value: str) -> list:
-    query = sql.SQL(GET_CHECK).format(
+    query = sql.SQL('SELECT * FROM {} WHERE {} = %s ORDER BY "id" DESC').format(
         sql.Identifier(table_name),
         sql.Identifier(where))
     try:
@@ -80,7 +81,37 @@ def get_info_url() -> list:
     try:
         connection = get_connection()
         cursor = connection.cursor()
-        cursor.execute(GET_INFO_URL)
+        cursor.execute("""
+            SELECT DISTINCT
+                u.id,
+                u.name,
+                max_uc.status_code,
+                max_uc.created_at
+            FROM
+                urls AS u
+            LEFT JOIN (
+                SELECT
+                    uc.url_id,
+                    uc.status_code,
+                    uc.created_at
+                FROM
+                    url_checks AS uc
+                INNER JOIN (
+                    SELECT
+                        url_id,
+                        MAX(created_at) AS max_created_at
+                    FROM
+                        url_checks
+                    GROUP BY
+                        url_id
+                ) AS max_uc
+                ON uc.url_id = max_uc.url_id
+                AND uc.created_at = max_uc.max_created_at
+            ) AS max_uc
+            ON u.id = max_uc.url_id
+            ORDER BY
+                u.id DESC
+            """)
         data = cursor.fetchall()
         cursor.close()
         connection.close()
@@ -100,7 +131,7 @@ def save_url(url: str):
     try:
         connection = get_connection()
         cursor = connection.cursor()
-        cursor.execute(INSERT_URL_TABLE, (url,))
+        cursor.execute('INSERT INTO urls (name) VALUES (%s)', (url,))
         connection.commit()
         cursor.close()
         connection.close()
@@ -116,11 +147,21 @@ def save_pars(url_id: str,
     try:
         connection = get_connection()
         cursor = connection.cursor()
-        cursor.execute(INSERT_URL_CHECKS_TABLE, (url_id,
-                                                 status_code,
-                                                 h1,
-                                                 title,
-                                                 description,))
+        cursor.execute("""
+        INSERT INTO url_checks (
+            url_id,
+            status_code,
+            h1,
+            title,
+            description
+        )
+        VALUES (%s, %s, %s, %s, %s)
+        """, 
+        (url_id,
+         status_code,
+         h1,
+         title,
+         description,))
         connection.commit()
         cursor.close()
         connection.close()
