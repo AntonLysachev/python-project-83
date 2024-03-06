@@ -65,7 +65,7 @@ def urls():
 
 @app.route('/urls/<id>/checks', methods=["POST"])
 def checks(id):
-    url = get_column('name','id', id)
+    url = get_column('name', 'id', id)
     status_code, h1, title, description = html_content(get_content(url))
     if status_code:
         save_info_url(id, status_code, h1, title, description)

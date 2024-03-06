@@ -136,10 +136,10 @@ def save_info_url(url_id: str,
             )
             VALUES (%s, %s, %s, %s, %s)
             """, (url_id,
-                status_code,
-                h1,
-                title,
-                description,))
+                  status_code,
+                  h1,
+                  title,
+                  description,))
             connection.commit()
     except (Exception) as error:
         print(error)
