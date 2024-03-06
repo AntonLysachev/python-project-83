@@ -6,7 +6,7 @@ Description: Page analyzer
              https://hexlet-code-qxkq.onrender.com
 
 Commands: 
-        Install - make install
+        Install - `make install`
         start guincorn - make start
         start flask server - make dev
         linter - make lint

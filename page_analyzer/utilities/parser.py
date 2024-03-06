@@ -1,5 +1,5 @@
 from urllib.request import urlopen
-from urllib.error import URLError
+from urllib.error import HTTPError
 from bs4 import BeautifulSoup
 
 
@@ -8,9 +8,9 @@ def get_content(url):
         html = urlopen(url)
     except (Exception) as error:
         print(error)
-        if isinstance(error, URLError):
-            return None
-        return error.code
+        if isinstance(error, HTTPError):
+            return error.code
+        return None
     return html
 
 

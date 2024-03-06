@@ -2,21 +2,16 @@ from page_analyzer.CRUD.db_util import get_connection
 from psycopg2 import sql
 
 
-def get_url(table_name: str,
-            where: str,
+def get_url(where: str,
             value: str,
             order_by: str = 'ASC') -> tuple:
-    query = sql.SQL('SELECT * FROM {} WHERE {} = %s ORDER BY "id" {}').format(
-        sql.Identifier(table_name),
+    query = sql.SQL('SELECT * FROM urls WHERE {} = %s ORDER BY "id" {}').format(
         sql.Identifier(where),
         sql.SQL(order_by))
     try:
-        connection = get_connection()
-        cursor = connection.cursor()
-        cursor.execute(query, (value,))
-        data = cursor.fetchone()
-        cursor.close()
-        connection.close()
+        with get_connection().cursor() as cursor:
+            cursor.execute(query, (value,))
+            data = cursor.fetchone()
     except (Exception) as error:
         print(error)
     if data:
@@ -25,18 +20,14 @@ def get_url(table_name: str,
                 'created_at': data[2]}
 
 
-def get_column(column_name: str, table_name: str, where, value: str) -> tuple:
-    query = sql.SQL('SELECT {} FROM {} WHERE {} =%s').format(
+def get_column(column_name: str, where: str, value: str) -> tuple:
+    query = sql.SQL('SELECT {} FROM urls WHERE {} =%s').format(
         sql.Identifier(column_name),
-        sql.Identifier(table_name),
         sql.Identifier(where))
     try:
-        connection = get_connection()
-        cursor = connection.cursor()
-        cursor.execute(query, (value,))
-        data = cursor.fetchall()
-        cursor.close()
-        connection.close()
+        with get_connection().cursor() as cursor:
+            cursor.execute(query, (value,))
+            data = cursor.fetchall()
     except (Exception) as error:
         print(error)
     if data:
@@ -50,12 +41,9 @@ def get_url_pars(table_name: str, where: str, value: str) -> list:
         sql.Identifier(table_name),
         sql.Identifier(where))
     try:
-        connection = get_connection()
-        cursor = connection.cursor()
-        cursor.execute(query, (value,))
-        data = cursor.fetchall()
-        cursor.close()
-        connection.close()
+        with get_connection().cursor() as cursor:
+            cursor.execute(query, (value,))
+            data = cursor.fetchall()
     except (Exception) as error:
         print(error)
     if data:
@@ -73,44 +61,41 @@ def get_url_pars(table_name: str, where: str, value: str) -> list:
 
 def get_info_url() -> list:
     try:
-        connection = get_connection()
-        cursor = connection.cursor()
-        cursor.execute("""
-            SELECT DISTINCT
-                u.id,
-                u.name,
-                max_uc.status_code,
-                max_uc.created_at
-            FROM
-                urls AS u
-            LEFT JOIN (
-                SELECT
-                    uc.url_id,
-                    uc.status_code,
-                    uc.created_at
+        with get_connection().cursor() as cursor:
+            cursor.execute("""
+                SELECT DISTINCT
+                    u.id,
+                    u.name,
+                    max_uc.status_code,
+                    max_uc.created_at
                 FROM
-                    url_checks AS uc
-                INNER JOIN (
+                    urls AS u
+                LEFT JOIN (
                     SELECT
-                        url_id,
-                        MAX(created_at) AS max_created_at
+                        uc.url_id,
+                        uc.status_code,
+                        uc.created_at
                     FROM
-                        url_checks
-                    GROUP BY
-                        url_id
+                        url_checks AS uc
+                    INNER JOIN (
+                        SELECT
+                            url_id,
+                            MAX(created_at) AS max_created_at
+                        FROM
+                            url_checks
+                        GROUP BY
+                            url_id
+                    ) AS max_uc
+                    ON uc.url_id = max_uc.url_id
+                    AND uc.created_at = max_uc.max_created_at
                 ) AS max_uc
-                ON uc.url_id = max_uc.url_id
-                AND uc.created_at = max_uc.max_created_at
-            ) AS max_uc
-            ON u.id = max_uc.url_id
-            ORDER BY
-                u.id DESC
-            """)
-        data = cursor.fetchall()
-        cursor.close()
-        connection.close()
+                ON u.id = max_uc.url_id
+                ORDER BY
+                    u.id DESC
+                """)
+            data = cursor.fetchall()
     except (Exception) as error:
-        print(error)
+        raise error
     if data:
         list_urls = []
         for field in data:
@@ -123,41 +108,39 @@ def get_info_url() -> list:
 
 def save_url(url: str):
     try:
-        connection = get_connection()
-        cursor = connection.cursor()
-        cursor.execute('INSERT INTO urls (name) VALUES (%s)', (url,))
-        connection.commit()
-        cursor.close()
-        connection.close()
+        with get_connection() as connection:
+            cursor = connection.cursor()
+            cursor.execute('INSERT INTO urls (name) VALUES (%s) RETURNING id', (url,))
+            connection.commit()
+            inserted_id = cursor.fetchone()
+            return inserted_id[0]
     except (Exception) as error:
         print(error)
 
 
-def save_pars(url_id: str,
-              status_code: str,
-              h1: str,
-              title: str,
-              description: str):
+def save_info_url(url_id: str,
+                  status_code: str,
+                  h1: str,
+                  title: str,
+                  description: str):
     try:
-        connection = get_connection()
-        cursor = connection.cursor()
-        cursor.execute("""
-        INSERT INTO url_checks (
-            url_id,
-            status_code,
-            h1,
-            title,
-            description
-        )
-        VALUES (%s, %s, %s, %s, %s)
-        """, (url_id,
-              status_code,
-              h1,
-              title,
-              description,))
-        connection.commit()
-        cursor.close()
-        connection.close()
+        with get_connection() as connection:
+            cursor = connection.cursor()
+            cursor.execute("""
+            INSERT INTO url_checks (
+                url_id,
+                status_code,
+                h1,
+                title,
+                description
+            )
+            VALUES (%s, %s, %s, %s, %s)
+            """, (url_id,
+                status_code,
+                h1,
+                title,
+                description,))
+            connection.commit()
     except (Exception) as error:
         print(error)
 

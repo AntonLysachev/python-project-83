@@ -9,7 +9,7 @@ from page_analyzer.CRUD.crud_utils import (save_url,
                                            get_column,
                                            get_url,
                                            get_info_url,
-                                           save_pars,
+                                           save_info_url,
                                            get_url_pars)
 from urllib.parse import urlparse
 from page_analyzer.utilities.validator import validate
@@ -38,20 +38,19 @@ def add_url():
         return render_template('index.html'), 422
     url = urlparse(url)
     normalize_url = f'{url.scheme}://{url.netloc}'
-    is_exists = get_url('urls', 'name', normalize_url)
+    is_exists = get_url('name', normalize_url)
     if is_exists:
         id = is_exists['id']
         flash('Страница уже существует', 'info')
         return redirect(url_for('urls_view', id=id))
-    save_url(normalize_url)
-    id = get_column('id', 'urls', 'name', normalize_url)
+    id = save_url(normalize_url)
     flash('Страница успешно добавлена', 'success')
     return redirect(url_for('urls_view', id=id))
 
 
 @app.route('/urls/<id>')
 def urls_view(id):
-    url = get_url('urls', 'id', id)
+    url = get_url('id', id)
     list_info = get_url_pars('url_checks', 'url_id', id)
     return render_template('urls_view.html',
                            url=url,
@@ -66,10 +65,10 @@ def urls():
 
 @app.route('/urls/<id>/checks', methods=["POST"])
 def checks(id):
-    url = get_column('name', 'urls', 'id', id)
+    url = get_column('name','id', id)
     status_code, h1, title, description = html_content(get_content(url))
     if status_code:
-        save_pars(id, status_code, h1, title, description)
+        save_info_url(id, status_code, h1, title, description)
         flash('Страница успешно проверена', 'success')
         return redirect(url_for('urls_view', id=id))
     flash('Произошла ошибка при проверке', 'danger')
