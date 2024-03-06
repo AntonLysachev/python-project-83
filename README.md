@@ -7,7 +7,7 @@ Description: Page analyzer
 
 Commands: 
         Install - `make install`
-        start guincorn - make start
-        start flask server - make dev
-        linter - make lint
-        run build.sh - make build
+        start guincorn - `make start`
+        start flask server - `make dev`
+        linter - `make lint`
+        run build.sh - `make build`
