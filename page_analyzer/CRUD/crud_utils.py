@@ -30,7 +30,7 @@ def get_column(column_name: str, where: str, value: str) -> tuple:
     return data
 
 
-def get_url_pars(table_name: str, where: str, value: str) -> list:
+def get_url_list(table_name: str, where: str, value: str) -> list:
     query = sql.SQL('SELECT * FROM {} WHERE {} = %s ORDER BY "id" DESC').format(
         sql.Identifier(table_name),
         sql.Identifier(where))

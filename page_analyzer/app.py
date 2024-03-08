@@ -10,7 +10,7 @@ from page_analyzer.CRUD.crud_utils import (save_url,
                                            get_url,
                                            get_info_url,
                                            save_info_url,
-                                           get_url_pars)
+                                           get_url_list)
 from urllib.parse import urlparse
 from page_analyzer.utilities.validator import validate
 from page_analyzer.utilities.parser import html_content, get_content
@@ -51,7 +51,7 @@ def add_url():
 @app.route('/urls/<id>')
 def urls_view(id):
     url = get_url('id', id)
-    list_info = get_url_pars('url_checks', 'url_id', id)
+    list_info = get_url_list('url_checks', 'url_id', id)
     return render_template('urls_view.html',
                            url=url,
                            list_info=list_info)
