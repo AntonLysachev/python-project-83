@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 def get_content(url):
     try:
         response = requests.get(url)
-    except(Exception):
+    except (Exception):
         return None
     return response
 
@@ -18,4 +18,3 @@ def html_content(html) -> tuple:
     description_tag = soup.find('meta', attrs={'name': 'description'})
     description = description_tag['content'] if description_tag else ''
     return status_code, h1, title, description
-
