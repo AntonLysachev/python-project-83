@@ -13,7 +13,7 @@ from page_analyzer.CRUD.crud_utils import (save_url,
                                            get_url_list)
 from urllib.parse import urlparse
 from page_analyzer.utilities.validator import validate
-from page_analyzer.utilities.parser import html_content, get_content
+from page_analyzer.utilities.html_content import html_content, get_content
 
 
 load_dotenv()
@@ -66,8 +66,9 @@ def urls():
 @app.route('/urls/<id>/checks', methods=["POST"])
 def checks(id):
     url = get_column('name', 'id', id)
-    status_code, h1, title, description = html_content(get_content(url))
-    if status_code:
+    html = get_content(url)
+    if html:
+        status_code, h1, title, description = html_content(html)
         save_info_url(id, status_code, h1, title, description)
         flash('Страница успешно проверена', 'success')
         return redirect(url_for('urls_view', id=id))
