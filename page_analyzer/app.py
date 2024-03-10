@@ -6,7 +6,6 @@ from flask import (Flask,
 import os
 from dotenv import load_dotenv
 from page_analyzer.CRUD.crud_utils import (save_url,
-                                           get_column,
                                            get_url,
                                            get_info_url,
                                            save_info_url,
@@ -51,7 +50,7 @@ def add_url():
 @app.route('/urls/<id>')
 def urls_view(id):
     url = get_url('id', id)
-    list_info = get_url_list('url_checks', 'url_id', id)
+    list_info = get_url_list(id)
     return render_template('urls_view.html',
                            url=url,
                            list_info=list_info)
@@ -65,7 +64,7 @@ def urls():
 
 @app.route('/urls/<id>/checks', methods=["POST"])
 def checks(id):
-    url = get_column('name', 'id', id)
+    url = get_url('id', id)['name']
     html = get_content(url)
     if html:
         status_code, h1, title, description = html_content(html)
