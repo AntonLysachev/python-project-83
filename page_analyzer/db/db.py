@@ -4,12 +4,14 @@ import os
 
 
 def get_connection() -> psycopg2.connect:
-    database_url = os.getenv('DATABASE_URL')
+    database_url = os.getenv("DATABASE_URL")
     connection = psycopg2.connect(database_url)
     return connection
 
-#get_url не везде возвразает url по id: (is_exists = get_url('name', normalize_url)) 40 строчка app.py
-#переменную query создаю для удобств чтения
+
+# get_url не везде возвразает url по id: (is_exists = get_url('name', normalize_url)) 40 строчка app.py
+# переменную query создаю для удобств чтения
+
 
 def get_url(where: str, value: str, order_by: str = "ASC") -> tuple:
     query = sql.SQL('SELECT * FROM urls WHERE {} = %s ORDER BY "id" {}').format(
