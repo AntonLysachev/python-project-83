@@ -5,14 +5,14 @@ from flask import (Flask,
                    url_for)
 import os
 from dotenv import load_dotenv
-from page_analyzer.CRUD.crud_utils import (save_url,
+from page_analyzer.db.db import (save_url,
                                            get_url,
                                            get_info_url,
                                            save_info_url,
                                            get_url_list)
 from urllib.parse import urlparse
-from page_analyzer.utilities.validator import validate
-from page_analyzer.utilities.html_content import html_content, get_content
+from page_analyzer.validator import address
+from page_analyzer.html_content import html_content, get_content
 
 
 load_dotenv()
@@ -30,7 +30,7 @@ def index() -> render_template:
 @app.route('/urls', methods=["POST"])
 def add_url():
     url = request.form.get('url')
-    errors = validate(url)
+    errors = address(url)
     if errors:
         for error in errors:
             flash(*error)

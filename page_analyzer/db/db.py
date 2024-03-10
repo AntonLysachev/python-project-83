@@ -1,6 +1,15 @@
-from page_analyzer.CRUD.db_util import get_connection
 from psycopg2 import sql, extras
+import psycopg2
+import os
 
+
+def get_connection() -> psycopg2.connect:
+    database_url = os.getenv('DATABASE_URL')
+    connection = psycopg2.connect(database_url)
+    return connection
+
+#get_url не везде возвразает url по id: (is_exists = get_url('name', normalize_url)) 40 строчка app.py
+#переменную query создаю для удобств чтения
 
 def get_url(where: str, value: str, order_by: str = "ASC") -> tuple:
     query = sql.SQL('SELECT * FROM urls WHERE {} = %s ORDER BY "id" {}').format(
@@ -79,8 +88,7 @@ def get_info_url() -> list:
 
 
 def save_url(url: str):
-    with get_connection() as connection:
-        cursor = connection.cursor()
+    with get_connection() as connection, connection.cursor() as cursor:
         cursor.execute("INSERT INTO urls (name) VALUES (%s) RETURNING id", (url,))
         connection.commit()
         inserted_id = cursor.fetchone()
@@ -88,8 +96,7 @@ def save_url(url: str):
 
 
 def save_info_url(url_id: str, status_code: str, h1: str, title: str, description: str):
-    with get_connection() as connection:
-        cursor = connection.cursor()
+    with get_connection() as connection, connection.cursor() as cursor:
         cursor.execute(
             """
         INSERT INTO url_checks (
