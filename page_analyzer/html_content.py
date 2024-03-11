@@ -1,16 +1,7 @@
-import requests
 from bs4 import BeautifulSoup
 
 
-def get_content(url):
-    try:
-        response = requests.get(url)
-    except (Exception):
-        return None
-    return response
-
-
-def html_content(html) -> tuple:
+def get_info_site(html) -> tuple:
     status_code = html.status_code
     soup = BeautifulSoup(html.content, 'html.parser')
     h1 = soup.h1.string if soup.h1 else ''

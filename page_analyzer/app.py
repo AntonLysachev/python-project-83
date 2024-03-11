@@ -10,7 +10,8 @@ from page_analyzer.db import (
 )
 from urllib.parse import urlparse
 from page_analyzer.validator import address
-from page_analyzer.html_content import html_content, get_content
+import requests
+from page_analyzer.html_content import get_info_site
 
 
 load_dotenv()
@@ -61,9 +62,9 @@ def urls():
 @app.route("/urls/<id>/checks", methods=["POST"])
 def checks(id):
     url = get_url("id", id)["name"]
-    html = get_content(url)
+    html = requests.get(url)
     if html:
-        status_code, h1, title, description = html_content(html)
+        status_code, h1, title, description = get_info_site(html)
         save_info_url(id, status_code, h1, title, description)
         flash("Страница успешно проверена", "success")
         return redirect(url_for("urls_view", id=id))
