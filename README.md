@@ -12,4 +12,4 @@ Commands:
         linter - `make lint`,
         run build.sh - `make build`
 
-Environment variables: FLASK_APP=page_analyzer:app, SECRET_KEY=your private key, DATABASE_URL=url of your database, DEBUG_SWITCH=Enables/disables debug mode(True/Fals)
+Environment variables: Required environment variables in the .env.sample file
