@@ -9,7 +9,7 @@ from page_analyzer.db import (
     save_info_url,
     get_url,
 )
-from page_analyzer.urls import validate_url, normalize_url
+from page_analyzer.urls import validate_url, normalize_url, get_response
 import requests
 from page_analyzer.html_content import get_info_site
 
@@ -61,11 +61,7 @@ def urls():
 @app.route("/urls/<id>/checks", methods=["POST"])
 def checks(id):
     url = get_url_by_id(id)["name"]
-    response = requests.get(url)
-    try:
-        response.raise_for_status()
-    except requests.exceptions.HTTPError as error:
-        raise error
+    response = get_response(url)
     if response:
         status_code, h1, title, description = get_info_site(response)
         save_info_url(id, status_code, h1, title, description)
