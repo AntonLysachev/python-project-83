@@ -10,7 +10,6 @@ from page_analyzer.db import (
     get_url,
 )
 from page_analyzer.urls import validate_url, normalize_url, get_response
-import requests
 from page_analyzer.html_content import get_info_site
 
 

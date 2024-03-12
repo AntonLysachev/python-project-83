@@ -1,6 +1,7 @@
 from validators import url
 from urllib.parse import urlparse
 import requests
+
 # но даже если убрать обязательность заполнения вответ будет Некорректный URL потомучто is_url пустой
 
 
@@ -21,6 +22,6 @@ def get_response(url):
     try:
         response = requests.get(url)
         response.raise_for_status()
-    except Exception as error:
+    except Exception:
         return False
     return response

@@ -10,7 +10,9 @@ def get_connection() -> psycopg2.connect:
 
 
 def get_url_by_id(value: str, order_by: str = "ASC") -> tuple:
-    query = sql.SQL('SELECT * FROM urls WHERE id = %s ORDER BY "id" {}').format(sql.SQL(order_by))
+    query = sql.SQL('SELECT * FROM urls WHERE id = %s ORDER BY "id" {}').format(
+        sql.SQL(order_by)
+    )
     with get_connection().cursor(cursor_factory=extras.DictCursor) as cursor:
         cursor.execute(query, (value,))
         data = cursor.fetchone()
@@ -19,7 +21,9 @@ def get_url_by_id(value: str, order_by: str = "ASC") -> tuple:
 
 
 def get_url_by_name(value: str, order_by: str = "ASC") -> tuple:
-    query = sql.SQL('SELECT * FROM urls WHERE name = %s ORDER BY "id" {}').format(sql.SQL(order_by))
+    query = sql.SQL('SELECT * FROM urls WHERE name = %s ORDER BY "id" {}').format(
+        sql.SQL(order_by)
+    )
     with get_connection().cursor(cursor_factory=extras.DictCursor) as cursor:
         cursor.execute(query, (value,))
         data = cursor.fetchone()
