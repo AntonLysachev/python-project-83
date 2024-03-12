@@ -8,8 +8,7 @@ from page_analyzer.db import (
     save_info_url,
     get_url_list,
 )
-from urllib.parse import urlparse
-from page_analyzer.urls import validate_url
+from page_analyzer.urls import validate_url, normalize_url
 import requests
 from page_analyzer.html_content import get_info_site
 
@@ -34,14 +33,13 @@ def add_url():
         for error in errors:
             flash(*error)
         return render_template("index.html"), 422
-    url = urlparse(url)
-    normalize_url = f"{url.scheme}://{url.netloc}"
-    is_exists = get_url("name", normalize_url)
+    url = normalize_url
+    is_exists = get_url("name", url)
     if is_exists:
         id = is_exists["id"]
         flash("Страница уже существует", "info")
         return redirect(url_for("urls_view", id=id))
-    id = save_url(normalize_url)
+    id = save_url(url)
     flash("Страница успешно добавлена", "success")
     return redirect(url_for("urls_view", id=id))
 
