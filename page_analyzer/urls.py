@@ -10,6 +10,7 @@ def validate_url(addres: str) -> list:
         errors.append(("Некорректный URL", "danger"))
     return errors
 
+
 def normalize_url(url: str) -> str:
     url = urlparse(url)
     return f"{url.scheme}://{url.netloc}"

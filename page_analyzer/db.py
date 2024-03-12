@@ -21,34 +21,17 @@ def get_url(where: str, value: str, order_by: str = "ASC") -> tuple:
         cursor.execute(query, (value,))
         data = cursor.fetchone()
         if data:
-            return {
-                "id": data["id"],
-                "name": data["name"],
-                "created_at": data["created_at"],
-            }
+            return data
 
 
 def get_url_list(value: str) -> list:
-    list_urls = []
     with get_connection().cursor(cursor_factory=extras.DictCursor) as cursor:
         cursor.execute(
             'SELECT * FROM url_checks WHERE url_id = %s ORDER BY "id" DESC', (value,)
         )
         data = cursor.fetchall()
         if data:
-            for field in data:
-                list_urls.append(
-                    {
-                        "id": field["id"],
-                        "url_id": field["url_id"],
-                        "status_code": field["status_code"],
-                        "h1": field["h1"],
-                        "title": field["title"],
-                        "description": field["description"],
-                        "created_at": field["created_at"],
-                    }
-                )
-    return list_urls
+            return data
 
 
 def get_info_url() -> list:
