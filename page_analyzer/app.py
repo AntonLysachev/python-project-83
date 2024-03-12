@@ -7,7 +7,7 @@ from page_analyzer.db import (
     get_url_by_name,
     get_info_url,
     save_info_url,
-    get_url_list,
+    get_url,
 )
 from page_analyzer.urls import validate_url, normalize_url
 import requests
@@ -34,7 +34,7 @@ def add_url():
         for error in errors:
             flash(*error)
         return render_template("index.html"), 422
-    url = normalize_url
+    url = normalize_url(url)
     is_exists = get_url_by_name(url)
     if is_exists:
         id = is_exists["id"]
@@ -48,7 +48,7 @@ def add_url():
 @app.route("/urls/<id>")
 def urls_view(id):
     url = get_url_by_id(id)
-    list_info = get_url_list(id)
+    list_info = get_url(id)
     return render_template("urls_view.html", url=url, list_info=list_info)
 
 
@@ -60,7 +60,7 @@ def urls():
 
 @app.route("/urls/<id>/checks", methods=["POST"])
 def checks(id):
-    url = get_url("id", id)["name"]
+    url = get_url_by_id(id)["name"]
     html = requests.get(url)
     if html:
         status_code, h1, title, description = get_info_site(html)
