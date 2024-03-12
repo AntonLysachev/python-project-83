@@ -61,9 +61,13 @@ def urls():
 @app.route("/urls/<id>/checks", methods=["POST"])
 def checks(id):
     url = get_url_by_id(id)["name"]
-    html = requests.get(url)
-    if html:
-        status_code, h1, title, description = get_info_site(html)
+    response = requests.get(url)
+    try:
+        response.raise_for_status()
+    except requests.exceptions.HTTPError as error:
+        raise error
+    if response:
+        status_code, h1, title, description = get_info_site(response)
         save_info_url(id, status_code, h1, title, description)
         flash("Страница успешно проверена", "success")
         return redirect(url_for("urls_view", id=id))
