@@ -9,13 +9,18 @@ def get_connection() -> psycopg2.connect:
     return connection
 
 
-# get_url не везде возвразает url по id: (is_exists = get_url('name', normalize_url)) 40 строчка app.py
-# переменную query создаю для удобств чтения
+def get_url_by_id(value: str, order_by: str = "ASC") -> tuple:
+    query = sql.SQL('SELECT * FROM urls WHERE id = %s ORDER BY "id" {}').format(sql.SQL(order_by)
+    )
+    with get_connection().cursor(cursor_factory=extras.DictCursor) as cursor:
+        cursor.execute(query, (value,))
+        data = cursor.fetchone()
+        if data:
+            return data
 
 
-def get_url(where: str, value: str, order_by: str = "ASC") -> tuple:
-    query = sql.SQL('SELECT * FROM urls WHERE {} = %s ORDER BY "id" {}').format(
-        sql.Identifier(where), sql.SQL(order_by)
+def get_url_by_name(value: str, order_by: str = "ASC") -> tuple:
+    query = sql.SQL('SELECT * FROM urls WHERE name = %s ORDER BY "id" {}').format(sql.SQL(order_by)
     )
     with get_connection().cursor(cursor_factory=extras.DictCursor) as cursor:
         cursor.execute(query, (value,))
