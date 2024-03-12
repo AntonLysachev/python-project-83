@@ -3,7 +3,8 @@ import os
 from dotenv import load_dotenv
 from page_analyzer.db import (
     save_url,
-    get_url,
+    get_url_by_id,
+    get_url_by_name,
     get_info_url,
     save_info_url,
     get_url_list,
@@ -34,7 +35,7 @@ def add_url():
             flash(*error)
         return render_template("index.html"), 422
     url = normalize_url
-    is_exists = get_url("name", url)
+    is_exists = get_url_by_name(url)
     if is_exists:
         id = is_exists["id"]
         flash("Страница уже существует", "info")
@@ -46,7 +47,7 @@ def add_url():
 
 @app.route("/urls/<id>")
 def urls_view(id):
-    url = get_url("id", id)
+    url = get_url_by_id(id)
     list_info = get_url_list(id)
     return render_template("urls_view.html", url=url, list_info=list_info)
 
