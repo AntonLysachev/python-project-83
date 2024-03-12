@@ -5,7 +5,7 @@ from page_analyzer.db import (
     save_url,
     get_url_by_id,
     get_url_by_name,
-    get_info_url,
+    get_urls_with_last_check,
     save_info_url,
     get_url,
 )
@@ -54,7 +54,7 @@ def urls_view(id):
 
 @app.route("/urls")
 def urls():
-    urls = get_info_url()
+    urls = get_urls_with_last_check()
     return render_template("urls.html", urls=urls), 200
 
 

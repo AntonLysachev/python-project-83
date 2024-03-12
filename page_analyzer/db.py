@@ -37,7 +37,7 @@ def get_url(value: str) -> list:
             return data
 
 
-def get_info_url() -> list:
+def get_urls_with_last_check() -> list:
     list_urls = []
     with get_connection().cursor(cursor_factory=extras.DictCursor) as cursor:
         cursor.execute("SELECT id, name FROM urls ORDER BY id  DESC")
