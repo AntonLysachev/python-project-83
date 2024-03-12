@@ -9,7 +9,7 @@ from page_analyzer.db import (
     get_url_list,
 )
 from urllib.parse import urlparse
-from page_analyzer.validator import address
+from page_analyzer.urls import validate_url
 import requests
 from page_analyzer.html_content import get_info_site
 
@@ -29,7 +29,7 @@ def index() -> render_template:
 @app.route("/urls", methods=["POST"])
 def add_url():
     url = request.form.get("url")
-    errors = address(url)
+    errors = validate_url(url)
     if errors:
         for error in errors:
             flash(*error)
