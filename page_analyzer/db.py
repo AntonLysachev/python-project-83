@@ -43,14 +43,10 @@ def get_urls_with_last_check() -> list:
         cursor.execute("SELECT id, name FROM urls ORDER BY id  DESC")
         urls = cursor.fetchall()
         cursor.execute(
-            """SELECT DISTINCT uc.url_id, uc.status_code, uc.created_at
-                            FROM url_checks uc
-                            JOIN (
-                                SELECT url_id, MAX(created_at) AS max_created_at
-                                    FROM url_checks
-                                    GROUP BY url_id) AS max_created_at
-                            ON uc.url_id = max_created_at.url_id AND uc.created_at = max_created_at.max_created_at
-                            ORDER BY uc.url_id  DESC"""
+            """SELECT DISTINCT url_id, status_code, max(created_at)as created_at
+                    FROM url_checks
+                    GROUP BY url_id, status_code
+                    ORDER BY url_id  DESC"""
         )
         url_checks = cursor.fetchall()
         urls_dict = [{"id": data["id"], "name": data["name"]} for data in urls]
