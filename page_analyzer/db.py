@@ -1,6 +1,10 @@
 from psycopg2 import extras
 import psycopg2
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
@@ -10,22 +14,22 @@ def get_connection(database_url) -> psycopg2.connect:
     return connection
 
 
-def get_url_by_id(value: str) -> tuple:
+def get_url_by_id(url_id: str) -> tuple:
     with get_connection(DATABASE_URL).cursor(cursor_factory=extras.DictCursor) as cursor:
-        cursor.execute('SELECT * FROM urls WHERE id = %s', (value,))
+        cursor.execute('SELECT * FROM urls WHERE id = %s', (url_id,))
         return cursor.fetchone()
 
 
-def get_url_by_name(value: str, order_by: str = "ASC") -> tuple:
+def get_url_by_name(name: str, order_by: str = "ASC") -> tuple:
     with get_connection(DATABASE_URL).cursor(cursor_factory=extras.DictCursor) as cursor:
-        cursor.execute('SELECT * FROM urls WHERE name = %s', (value,))
+        cursor.execute('SELECT * FROM urls WHERE name = %s', (name,))
         return cursor.fetchone()
 
 
-def get_info_url(value: str) -> list:
+def get_url_checks_by_id(url_id: str) -> list:
     with get_connection(DATABASE_URL).cursor(cursor_factory=extras.DictCursor) as cursor:
         cursor.execute(
-            'SELECT * FROM url_checks WHERE url_id = %s ORDER BY "id" DESC', (value,)
+            'SELECT * FROM url_checks WHERE url_id = %s ORDER BY "id" DESC', (url_id,)
         )
         data = cursor.fetchall()
         if data:
@@ -33,18 +37,15 @@ def get_info_url(value: str) -> list:
 
 
 def get_urls_with_last_check() -> list:
-    list_urls = []
     with get_connection(DATABASE_URL).cursor(cursor_factory=extras.DictCursor) as cursor:
         cursor.execute("SELECT id, name FROM urls ORDER BY id  DESC")
         urls = cursor.fetchall()
         cursor.execute(
             """SELECT url_id, status_code, max(created_at)as created_at
                     FROM url_checks
-                    GROUP BY url_id, status_code
-                    ORDER BY url_id  DESC"""
+                    GROUP BY url_id, status_code"""
         )
         url_checks = cursor.fetchall()
-        urls_dict = [{"id": data["id"], "name": data["name"]} for data in urls]
 
         url_checks_dict = {
             data["url_id"]: {
@@ -54,16 +55,20 @@ def get_urls_with_last_check() -> list:
             for data in url_checks
         }
 
-        for data in urls_dict:
-            id = data["id"]
-            data["status_code"] = ""
-            data["create_at"] = ""
-            if id in url_checks_dict:
-                data["status_code"] = url_checks_dict[id]["status_code"]
-                data["created_at"] = url_checks_dict[id]["created_at"]
-            list_urls.append(data)
+        records = []
 
-    return list_urls
+        for data in urls:
+            id = data["id"]
+            check_data = url_checks_dict.get(id, {})
+            records.append(
+                {'id': data["id"],
+                 'name': data['name'],
+                 'status_code': check_data.get('status_code', ''),
+                 'created_at': check_data.get('created_at', '')
+                 }
+            )
+
+    return records
 
 
 def add_url(url: str):

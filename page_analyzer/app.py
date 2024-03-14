@@ -8,7 +8,7 @@ from page_analyzer.db import (
     get_url_by_name,
     get_urls_with_last_check,
     add_info_url,
-    get_info_url,
+    get_url_checks_by_id,
 )
 from page_analyzer.urls import validate_url, normalize_url
 from page_analyzer.html_content import get_info_site
@@ -48,7 +48,7 @@ def urls_post():
 @app.route("/urls/<id>")
 def urls_view(id):
     url = get_url_by_id(id)
-    info_url = get_info_url(id)
+    info_url = get_url_checks_by_id(id)
     return render_template("urls_view.html", url=url, info_url=info_url)
 
 
@@ -61,15 +61,16 @@ def urls():
 @app.route("/urls/<id>/checks", methods=["POST"])
 def checks(id):
     url = get_url_by_id(id)["name"]
-    response = requests.get(url)
-    response.raise_for_status()
-    if response:
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
         status_code, h1, title, description = get_info_site(response)
         add_info_url(id, status_code, h1, title, description)
         flash("Страница успешно проверена", "success")
         return redirect(url_for("urls_view", id=id))
-    flash("Произошла ошибка при проверке", "danger")
-    return redirect(url_for("urls_view", id=id))
+    except Exception:
+        flash("Произошла ошибка при проверке", "danger")
+        return redirect(url_for("urls_view", id=id))
 
 
 if __name__ == "__main__":
