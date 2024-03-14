@@ -66,7 +66,7 @@ def get_urls_with_last_check() -> list:
     return list_urls
 
 
-def save_url(url: str):
+def add_url(url: str):
     with get_connection(DATABASE_URL) as connection, connection.cursor() as cursor:
         cursor.execute("INSERT INTO urls (name) VALUES (%s) RETURNING id", (url,))
         connection.commit()
@@ -74,7 +74,7 @@ def save_url(url: str):
         return inserted_id[0]
 
 
-def save_info_url(url_id: str, status_code: str, h1: str, title: str, description: str):
+def add_info_url(url_id: str, status_code: str, h1: str, title: str, description: str):
     with get_connection(DATABASE_URL) as connection, connection.cursor() as cursor:
         cursor.execute(
             """
