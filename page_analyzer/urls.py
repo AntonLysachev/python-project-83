@@ -4,6 +4,9 @@ from urllib.parse import urlparse
 
 def validate_url(addres: str) -> list:
     errors = []
+    domen = urlparse(addres).netloc
+    if len(domen) > 250:
+        errors.append(("Слишком длинный URL", "danger"))
     if addres:
         is_url = url(addres)
     else:
