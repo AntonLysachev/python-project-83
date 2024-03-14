@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
 import os
+import requests
 from dotenv import load_dotenv
 from page_analyzer.db import (
     save_url,
@@ -9,7 +10,7 @@ from page_analyzer.db import (
     save_info_url,
     get_url,
 )
-from page_analyzer.urls import validate_url, normalize_url, get_response
+from page_analyzer.urls import validate_url, normalize_url
 from page_analyzer.html_content import get_info_site
 
 
@@ -60,7 +61,8 @@ def urls():
 @app.route("/urls/<id>/checks", methods=["POST"])
 def checks(id):
     url = get_url_by_id(id)["name"]
-    response = get_response(url)
+    response = requests.get(url)
+    response.raise_for_status()
     if response:
         status_code, h1, title, description = get_info_site(response)
         save_info_url(id, status_code, h1, title, description)
