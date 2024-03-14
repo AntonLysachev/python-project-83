@@ -40,16 +40,16 @@
         <th>Дата создания</th>
       </tr>
     </thead>
-    {% if list_info %}
+    {% if info_url %}
     <tbody>
-      {% for url_info in list_info %}
+      {% for info in info_url %}
       <tr>
-        <td>{{ url_info.id }}</td>
-        <td>{{ url_info.status_code }}</td>
-        <td>{{ url_info.h1 }}</td>
-        <td>{{ url_info.title }}</td>
-        <td>{{ url_info.description }}</td>
-        <td>{{ url_info.created_at }}</td>
+        <td>{{ info.id }}</td>
+        <td>{{ info.status_code }}</td>
+        <td>{{ info.h1 }}</td>
+        <td>{{ info.title }}</td>
+        <td>{{ info.description }}</td>
+        <td>{{ info.created_at }}</td>
       </tr>
       {% endfor %}
     </tbody>

@@ -8,7 +8,7 @@ from page_analyzer.db import (
     get_url_by_name,
     get_urls_with_last_check,
     add_info_url,
-    get_list_info_url,
+    get_info_url,
 )
 from page_analyzer.urls import validate_url, normalize_url
 from page_analyzer.html_content import get_info_site
@@ -48,8 +48,8 @@ def urls_post():
 @app.route("/urls/<id>")
 def urls_view(id):
     url = get_url_by_id(id)
-    list_info = get_list_info_url(id)
-    return render_template("urls_view.html", url=url, list_info=list_info)
+    info_url = get_info_url(id)
+    return render_template("urls_view.html", url=url, info_url=info_url)
 
 
 @app.route("/urls")
