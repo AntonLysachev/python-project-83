@@ -1,4 +1,4 @@
-from psycopg2 import sql, extras
+from psycopg2 import extras
 import psycopg2
 import os
 
