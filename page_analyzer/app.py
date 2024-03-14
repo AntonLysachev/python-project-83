@@ -27,7 +27,7 @@ def index() -> render_template:
 
 
 @app.route("/urls", methods=["POST"])
-def add_url():
+def urls_post():
     url = request.form.get("url")
     errors = validate_url(url)
     if errors:
