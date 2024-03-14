@@ -3,11 +3,11 @@ import os
 import requests
 from dotenv import load_dotenv
 from page_analyzer.db import (
-    save_url,
+    add_url,
     get_url_by_id,
     get_url_by_name,
     get_urls_with_last_check,
-    save_info_url,
+    add_info_url,
     get_list_info_url,
 )
 from page_analyzer.urls import validate_url, normalize_url
@@ -40,7 +40,7 @@ def add_url():
         id = is_exists["id"]
         flash("Страница уже существует", "info")
         return redirect(url_for("urls_view", id=id))
-    id = save_url(url)
+    id = add_url(url)
     flash("Страница успешно добавлена", "success")
     return redirect(url_for("urls_view", id=id))
 
@@ -65,7 +65,7 @@ def checks(id):
     response.raise_for_status()
     if response:
         status_code, h1, title, description = get_info_site(response)
-        save_info_url(id, status_code, h1, title, description)
+        add_info_url(id, status_code, h1, title, description)
         flash("Страница успешно проверена", "success")
         return redirect(url_for("urls_view", id=id))
     flash("Произошла ошибка при проверке", "danger")
