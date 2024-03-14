@@ -2,7 +2,6 @@ from validators import url
 from urllib.parse import urlparse
 
 
-
 def validate_url(addres: str) -> list:
     errors = []
     if addres:

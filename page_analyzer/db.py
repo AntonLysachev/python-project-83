@@ -2,9 +2,10 @@ from psycopg2 import sql, extras
 import psycopg2
 import os
 
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-def get_connection() -> psycopg2.connect:
-    database_url = os.getenv("DATABASE_URL")
+
+def get_connection(database_url) -> psycopg2.connect:
     connection = psycopg2.connect(database_url)
     return connection
 
@@ -13,7 +14,7 @@ def get_url_by_id(value: str, order_by: str = "ASC") -> tuple:
     query = sql.SQL('SELECT * FROM urls WHERE id = %s ORDER BY "id" {}').format(
         sql.SQL(order_by)
     )
-    with get_connection().cursor(cursor_factory=extras.DictCursor) as cursor:
+    with get_connection(DATABASE_URL).cursor(cursor_factory=extras.DictCursor) as cursor:
         cursor.execute(query, (value,))
         data = cursor.fetchone()
         if data:
@@ -24,7 +25,7 @@ def get_url_by_name(value: str, order_by: str = "ASC") -> tuple:
     query = sql.SQL('SELECT * FROM urls WHERE name = %s ORDER BY "id" {}').format(
         sql.SQL(order_by)
     )
-    with get_connection().cursor(cursor_factory=extras.DictCursor) as cursor:
+    with get_connection(DATABASE_URL).cursor(cursor_factory=extras.DictCursor) as cursor:
         cursor.execute(query, (value,))
         data = cursor.fetchone()
         if data:
@@ -32,7 +33,7 @@ def get_url_by_name(value: str, order_by: str = "ASC") -> tuple:
 
 
 def get_url(value: str) -> list:
-    with get_connection().cursor(cursor_factory=extras.DictCursor) as cursor:
+    with get_connection(DATABASE_URL).cursor(cursor_factory=extras.DictCursor) as cursor:
         cursor.execute(
             'SELECT * FROM url_checks WHERE url_id = %s ORDER BY "id" DESC', (value,)
         )
@@ -43,7 +44,7 @@ def get_url(value: str) -> list:
 
 def get_urls_with_last_check() -> list:
     list_urls = []
-    with get_connection().cursor(cursor_factory=extras.DictCursor) as cursor:
+    with get_connection(DATABASE_URL).cursor(cursor_factory=extras.DictCursor) as cursor:
         cursor.execute("SELECT id, name FROM urls ORDER BY id  DESC")
         urls = cursor.fetchall()
         cursor.execute(
@@ -76,7 +77,7 @@ def get_urls_with_last_check() -> list:
 
 
 def save_url(url: str):
-    with get_connection() as connection, connection.cursor() as cursor:
+    with get_connection(DATABASE_URL) as connection, connection.cursor() as cursor:
         cursor.execute("INSERT INTO urls (name) VALUES (%s) RETURNING id", (url,))
         connection.commit()
         inserted_id = cursor.fetchone()
@@ -84,7 +85,7 @@ def save_url(url: str):
 
 
 def save_info_url(url_id: str, status_code: str, h1: str, title: str, description: str):
-    with get_connection() as connection, connection.cursor() as cursor:
+    with get_connection(DATABASE_URL) as connection, connection.cursor() as cursor:
         cursor.execute(
             """
         INSERT INTO url_checks (
