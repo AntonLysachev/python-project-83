@@ -22,7 +22,7 @@ def get_url_by_name(value: str, order_by: str = "ASC") -> tuple:
         return cursor.fetchone()
 
 
-def get_url(value: str) -> list:
+def get_list_info_url(value: str) -> list:
     with get_connection(DATABASE_URL).cursor(cursor_factory=extras.DictCursor) as cursor:
         cursor.execute(
             'SELECT * FROM url_checks WHERE url_id = %s ORDER BY "id" DESC', (value,)
