@@ -47,7 +47,7 @@ def get_urls_with_last_check() -> list:
         cursor.execute("SELECT id, name FROM urls ORDER BY id  DESC")
         urls = cursor.fetchall()
         cursor.execute(
-            """SELECT DISTINCT url_id, status_code, max(created_at)as created_at
+            """SELECT url_id, status_code, max(created_at)as created_at
                     FROM url_checks
                     GROUP BY url_id, status_code
                     ORDER BY url_id  DESC"""

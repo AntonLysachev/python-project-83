@@ -2,12 +2,13 @@ from validators import url
 from urllib.parse import urlparse
 import requests
 
-# но даже если убрать обязательность заполнения вответ будет Некорректный URL потомучто is_url пустой
-
 
 def validate_url(addres: str) -> list:
-    is_url = url(addres)
     errors = []
+    if addres:
+        is_url = url(addres)
+    else:
+        errors.append(("URL обязателен", "danger"))
     if not is_url:
         errors.append(("Некорректный URL", "danger"))
     return errors
